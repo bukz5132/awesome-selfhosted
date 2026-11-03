@@ -549,12 +549,13 @@
           '<span class="lmeter"><span class="bar"><span style="width:' + m.pct + '%"></span></span><span class="lpct">' + (m.n ? m.pct + '%' : 'new') + (m.mastered ? ' ✓' : '') + '</span></span>' +
           '</a></li>';
       });
-      html += '</ol></section>';
+      html += '</ol>' + (MS.homeExtra ? MS.homeExtra(t) : '') + '</section>';
     });
     html += '<section class="howto"><h2>How to study with this</h2><ol>' +
       '<li><strong>Formulas &amp; ideas (5 min).</strong> Read the formula cards and the short notes. Use the formula sheet’s self-test mode to check you can recall them.</li>' +
       '<li><strong>Worked examples.</strong> Read the problem, try the first step yourself, then reveal one step at a time.</li>' +
       '<li><strong>Practice.</strong> Keep going until the mastery bar reaches 80% (8 of your last 10 right on the first try).</li>' +
+      '<li><strong>Exercise sheets.</strong> Every exercise from your course sheets: first how to tackle it, then you solve it together with the app step by step, then one on your own with new numbers.</li>' +
       '<li><strong>Smart review, daily.</strong> Ten mixed questions from all lessons you have started, with your mistakes first. Mixing topics and spacing them out is what makes it stick for the exam.</li>' +
       '</ol><p class="muted">Progress is saved in this browser only.</p></section>';
     html += '</div>';
@@ -791,6 +792,17 @@
     draw();
   };
 
+  /* ---------------- Shared helpers for the exercise-sheet engine ---------------- */
+  MS.esc = esc;
+  MS.typeset = typeset;
+  MS.clearMath = clearMath;
+  MS.setView = function (html) { setView(html); return app; };
+  MS.mountProblem = mountProblem;
+  MS.answerText = answerText;
+  MS.parseNum = parseNum;
+  MS.fmtPlain = fmtPlain;
+  MS.newSeed = newSeed;
+
   /* ---------------- Router ---------------- */
   function route() {
     var h = (location.hash || '').replace(/^#/, '');
@@ -800,6 +812,7 @@
     var m = h.match(/^(.*)-(learn|examples|practice)$/);
     if (m && MS.lessons[m[1]]) return viewLesson(m[1], m[2]);
     if (MS.lessons[h]) return viewLesson(h, 'learn');
+    if (MS.routeExtra && MS.routeExtra(h)) return;
     viewHome();
   }
   MS.start = function () {

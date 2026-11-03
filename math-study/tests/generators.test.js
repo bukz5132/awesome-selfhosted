@@ -5,7 +5,7 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const root = path.join(__dirname, '..');
 const ctx = { window: {}, console, Math, Object, String, Number, Array, JSON, isNaN, isFinite, Date };
 ctx.window = ctx; vm.createContext(ctx);
-for (const f of ['app.js', 'content/topic1.js', 'content/topic2.js']) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), ctx, { filename: f });
+for (const f of ['app.js', 'content/topic1.js', 'content/topic2.js', 'exercises.js', 'content/exercises-topic1.js', 'content/exercises-topic2.js']) vm.runInContext(fs.readFileSync(path.join(root, f), 'utf8'), ctx, { filename: f });
 const MS = ctx.MS;
 const H = MS.h;
 let fails = 0, total = 0;
@@ -52,5 +52,38 @@ for (const id of MS.order) {
     }
   });
 }
+// exercise sheets: every guided step must be well formed and accept its own answer
+let steps = 0;
+for (const id of Object.keys(MS.exercises)) {
+  const e = MS.exercises[id];
+  if (!e.method || !e.method.length) fail(`${id}: no method`);
+  for (const [lid, gi] of e.similar || []) if (!MS.lessons[lid] || !MS.lessons[lid].practice[gi]) fail(`${id}: bad similar ${lid}/${gi}`);
+  const runs = e.vary ? 150 : 1;
+  for (let s = 0; s < runs; s++) {
+    let inst;
+    try { inst = e.gen(MS.makeRng(s * 104729 + 1), s === 0); } catch (err) { fail(`${id} seed ${s}: threw ${err}`); continue; }
+    const where = `${id} seed ${s}`;
+    const txt = JSON.stringify(inst, (k, v) => typeof v === 'function' ? undefined : v);
+    if (/undefined|NaN|\[object/.test(txt)) fail(`${where}: text contains undefined/NaN`);
+    if (!inst.parts.length) fail(`${where}: no parts`);
+    let asks = 0;
+    for (const p of inst.parts) for (const st of p.steps) {
+      if (!st.say) fail(`${where}: step without text`);
+      if (!st.ask) continue;
+      asks++; steps++;
+      const P = st.ask;
+      if (P.type === 'mc' || P.type === 'multi') {
+        if (new Set(P.choices).size !== P.choices.length) fail(`${where}: duplicate choices`);
+        const a = P.type === 'mc' ? [P.ans] : P.ans;
+        if (a.some(i => !(i >= 0 && i < P.choices.length))) fail(`${where}: bad mc answer`);
+      }
+      if (P.type === 'num' && !(typeof P.ans === 'number' && isFinite(P.ans))) fail(`${where}: bad num ${P.ans}`);
+      if ((P.type === 'set' || P.type === 'tuple') && P.ans.some(x => !isFinite(x))) fail(`${where}: bad list`);
+      if (!MS.checkAnswer(P, asText(P)).ok) fail(`${where}: own answer rejected ${JSON.stringify(asText(P))}`);
+    }
+    if (!asks) fail(`${where}: nothing to answer`);
+  }
+}
+console.log(`${Object.keys(MS.exercises).length} sheet exercises, ${steps} guided steps checked`);
 console.log(`${total} problems generated, ${fails} failures`);
 process.exit(fails ? 1 : 0);

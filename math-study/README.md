@@ -15,6 +15,16 @@ There is also a **formula sheet** with a self-test mode and a daily **Smart revi
 | 1. Exponential and logarithmic functions | 1.1 Exponential functions · 1.2 Logarithmic functions · 1.3 Equations and inequalities · 1.4 Growth models |
 | 2. Functions: basic concepts and applications | 2.1 Definitions · 2.2 Types of functions · 2.3 Implicit and explicit equations · 2.4 Inverse functions · 2.5 Symmetry · 2.6 Sign charts and continuity · 2.7 Limits and asymptotes |
 
+## Exercise sheets
+
+Every exercise from the course sheets (Questions Topic 1, Review problems Topic 1, Functions of one variable exercises, Review problems Topics 1 and 2) has its own page with three steps:
+
+1. **How to tackle it**: the method, step by step.
+2. **Together**: the real exercise with the sheet's numbers, solved one step at a time; the student fills in each intermediate result.
+3. **Your turn**: the same exercise with new numbers (answer each part, with guided steps on request), plus matching practice problems from the lessons.
+
+Sheets live in `content/exercises-topic*.js` and are registered with `MS.addSheet(...)`; the engine is `exercises.js`. An exercise's `gen(R, orig)` must return the sheet's own numbers when `orig` is true.
+
 ## Run it
 
 No build step. Open `index.html` through any static web server, for example:

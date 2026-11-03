@@ -22,6 +22,8 @@
   --accent-soft: #e5ebfb;
   --accent-2: #c2410c;
   --mark: #ffe680;
+  --violet: #7c3aed;
+  --cyan: #0e7490;
   --good: #16794d;
   --good-soft: #e1f4ea;
   --bad: #b3261e;
@@ -34,16 +36,17 @@
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --paper: #0f141e; --card: #161d2b; --ink: #e5e9f2; --muted: #9aa5ba; --line: #283246; --grid: #1a2232;
-    --accent: #86a6ff; --accent-ink: #0b1020; --accent-soft: #1d2743; --accent-2: #fb923c; --mark: #6b5713;
+    --accent: #86a6ff; --accent-ink: #0b1020; --accent-soft: #1d2743; --accent-2: #fb923c; --mark: #6b5713; --violet: #c4a1ff; --cyan: #22d3ee;
     --good: #5fd39a; --good-soft: #12301f; --bad: #ff8a80; --bad-soft: #3a1a18; color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --paper: #0f141e; --card: #161d2b; --ink: #e5e9f2; --muted: #9aa5ba; --line: #283246; --grid: #1a2232;
-  --accent: #86a6ff; --accent-ink: #0b1020; --accent-soft: #1d2743; --accent-2: #fb923c; --mark: #6b5713;
+  --accent: #86a6ff; --accent-ink: #0b1020; --accent-soft: #1d2743; --accent-2: #fb923c; --mark: #6b5713; --violet: #c4a1ff; --cyan: #22d3ee;
   --good: #5fd39a; --good-soft: #12301f; --bad: #ff8a80; --bad-soft: #3a1a18; color-scheme: dark;
 }
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; }
 body { margin: 0; background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 17px; line-height: 1.6; }
 body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--card); }
@@ -256,6 +259,51 @@ table.signchart td.neg { color: var(--bad); font-weight: 600; }
 .big-score { font-family: var(--font-display); font-size: 3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
 .per-les { list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); }
 .per-les li { display: flex; justify-content: space-between; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+/* exercise sheets */
+.sheet-h { font-family: var(--font-display); font-size: 1rem; margin: 18px 0 8px; }
+.sheet-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--line); border-radius: var(--radius); background: var(--card); }
+.sheet-list li + li { border-top: 1px solid var(--line); }
+.sheet-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 12px 16px; color: var(--ink); text-decoration: none; flex-wrap: wrap; }
+.sheet-row:hover { background: var(--accent-soft); }
+.sheet-row .lpct { font-size: 0.82rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ex-list .lesson-row { grid-template-columns: 3.2rem minmax(0, 1fr) auto; }
+.ex-stat { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.pill { font-size: 0.75rem; padding: 2px 8px; border-radius: 999px; background: var(--grid); color: var(--muted); white-space: nowrap; }
+.pill.good { background: var(--good-soft); color: var(--good); }
+@media (max-width: 620px) { .ex-list .lesson-row { grid-template-columns: 2.6rem minmax(0, 1fr); } .ex-stat { grid-column: 2; justify-content: flex-start; } }
+ol.method { margin: 0; padding-left: 1.4em; display: grid; gap: 8px; }
+ol.method li::marker { color: var(--accent); font-weight: 700; }
+.ex-context { overflow-x: auto; overflow-y: hidden; }
+.ex-context .plot-wrap { margin-top: 12px; }
+.gpart { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px 16px; display: grid; gap: 10px; min-width: 0; }
+.gpart.complete { border-color: var(--good); }
+.gpart h3 { font-size: 0.95rem; }
+.gpart h3:empty { display: none; }
+.glabel { font-family: var(--font-mono); color: var(--accent); }
+.gq { font-size: 1.05rem; overflow-x: auto; overflow-y: hidden; }
+.gsteps { margin: 0; padding-left: 1.4em; display: grid; gap: 12px; }
+.gstep { padding-left: 4px; display: grid; gap: 8px; min-width: 0; }
+.gstep::marker { color: var(--accent); font-weight: 700; }
+.gstep.done .gsay { color: var(--muted); }
+.gsay, .gshow { overflow-x: auto; overflow-y: hidden; }
+.gshow { padding: 6px 10px; background: var(--paper); border-radius: 6px; }
+.gask { display: grid; gap: 6px; }
+.gbtns { display: flex; gap: 6px; flex-wrap: wrap; }
+.btn.sm { padding: 6px 12px; font-size: 0.88rem; }
+.gfb { padding: 6px 10px; border-radius: 6px; font-size: 0.9rem; }
+.gfb.good { background: var(--good-soft); color: var(--good); }
+.gfb.bad { background: var(--bad-soft); color: var(--bad); }
+.gfb.info { background: var(--accent-soft); color: var(--ink); }
+.choices.small .choice { padding: 7px 10px; }
+.gguide:empty { display: none; }
+.plot-wrap { max-width: 420px; }
+svg.plot { width: 100%; height: auto; display: block; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+svg.plot .pg { stroke: var(--grid); stroke-width: 1; }
+svg.plot .pa { stroke: var(--muted); stroke-width: 1.2; }
+svg.plot .pt { fill: var(--muted); font-size: 10px; font-family: var(--font-mono); }
+svg.plot .pc { fill: none; stroke-width: 2.4; }
+svg.plot .plg { fill: var(--card); stroke: var(--line); }
+svg.plot .pc1 { stroke: var(--accent); } svg.plot .pc2 { stroke: var(--good); } svg.plot .pc3 { stroke: var(--cyan); } svg.plot .pc4 { stroke: var(--accent-2); } svg.plot .pc5 { stroke: var(--violet); }
 mjx-container { max-width: 100%; }
 mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; }
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
@@ -279,6 +327,9 @@ window.MathJax = {
 <script src="app.js"></script>
 <script src="content/topic1.js"></script>
 <script src="content/topic2.js"></script>
+<script src="exercises.js"></script>
+<script src="content/exercises-topic1.js"></script>
+<script src="content/exercises-topic2.js"></script>
 <script>MS.start();</script>
 </body>
 </html>
